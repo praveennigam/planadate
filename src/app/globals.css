@@ -1,26 +1,609 @@
 @import "tailwindcss";
+@import "react-day-picker/style.css";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #080818;
+  --foreground: #eef2ff;
+  --accent: #6366f1;
+  --accent-soft: #818cf8;
+  --accent-lavender: #a78bfa;
+  --glass: rgba(99, 102, 241, 0.06);
+  --glass-border: rgba(129, 140, 248, 0.18);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-dm-sans);
+  --font-serif: var(--font-playfair);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  overflow-x: hidden;
 }
+
+/* Deep dark animated background */
+.dark-bg {
+  background-color: #080818;
+  background-image:
+    radial-gradient(ellipse 90% 60% at 12% 18%, rgba(59, 130, 246, 0.14), transparent 60%),
+    radial-gradient(ellipse 70% 50% at 88% 78%, rgba(139, 92, 246, 0.16), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 50% 0%, rgba(99, 102, 241, 0.12), transparent 50%),
+    radial-gradient(ellipse 40% 30% at 80% 12%, rgba(124, 58, 237, 0.1), transparent 50%);
+}
+
+/* Glass card */
+.glass-card {
+  position: relative;
+  background: linear-gradient(
+    145deg,
+    rgba(59, 130, 246, 0.1) 0%,
+    rgba(99, 102, 241, 0.08) 45%,
+    rgba(139, 92, 246, 0.1) 100%
+  );
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.glow-border {
+  box-shadow:
+    0 0 0 1px rgba(99, 102, 241, 0.18),
+    0 10px 36px rgba(0, 0, 0, 0.35),
+    0 0 70px rgba(139, 92, 246, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+/* Shimmer text */
+.shimmer-text {
+  background: linear-gradient(
+    90deg,
+    #60a5fa 0%,
+    #eef2ff 30%,
+    #818cf8 50%,
+    #c4b5fd 70%,
+    #60a5fa 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 3.5s linear infinite;
+}
+
+@keyframes shimmer {
+  to { background-position: 200% center; }
+}
+
+/* Pulse glow ring */
+.pulse-ring {
+  animation: pulse-ring 2.5s ease-in-out infinite;
+}
+
+@keyframes pulse-ring {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.45), 0 4px 20px rgba(99, 102, 241, 0.3); }
+  50% { box-shadow: 0 0 0 14px rgba(99, 102, 241, 0), 0 4px 30px rgba(139, 92, 246, 0.45); }
+}
+
+/* Wizard shell — single card */
+.wizard-shell {
+  width: 100%;
+  max-width: min(34rem, calc(100vw - 1rem));
+}
+
+@media (min-width: 640px) {
+  .wizard-shell {
+    max-width: min(40rem, calc(100vw - 2rem));
+  }
+}
+
+.wizard-shell > .glass-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: min(640px, calc(100dvh - 1rem));
+  height: min(680px, calc(100dvh - 1rem));
+  max-height: calc(100dvh - 1rem);
+}
+
+@media (min-width: 640px) {
+  .wizard-shell > .glass-card {
+    min-height: min(680px, calc(100dvh - 1.5rem));
+    height: min(720px, calc(100dvh - 1.5rem));
+    max-height: calc(100dvh - 1.5rem);
+  }
+}
+
+.wizard-brand {
+  background: linear-gradient(
+    180deg,
+    rgba(99, 102, 241, 0.08) 0%,
+    transparent 100%
+  );
+}
+
+.wizard-body {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(99, 102, 241, 0.3) transparent;
+}
+
+.step-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.step-content {
+  width: 100%;
+}
+
+/* Ticket card for summary */
+.ticket-card {
+  background: linear-gradient(
+    160deg,
+    rgba(99, 102, 241, 0.08) 0%,
+    rgba(139, 92, 246, 0.06) 100%
+  );
+  border: 1px solid rgba(129, 140, 248, 0.15);
+  position: relative;
+}
+
+.ticket-card::before,
+.ticket-card::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: #080818;
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.ticket-card::before { left: -10px; }
+.ticket-card::after { right: -10px; }
+
+/* ─── Romantic Calendar ─── */
+.romantic-calendar {
+  position: relative;
+  width: 100%;
+  padding: 3px;
+  border-radius: 1.25rem;
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.45),
+    rgba(99, 102, 241, 0.4),
+    rgba(139, 92, 246, 0.45)
+  );
+  background-size: 300% 300%;
+  animation: calendar-border-flow 8s ease infinite;
+  box-shadow:
+    0 0 50px rgba(244, 114, 182, 0.2),
+    0 12px 40px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+@keyframes calendar-border-flow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.calendar-shimmer-border {
+  background: linear-gradient(
+    120deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.18) 50%,
+    transparent 80%
+  );
+  background-size: 200% 100%;
+  animation: calendar-shimmer 4s linear infinite;
+}
+
+@keyframes calendar-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.calendar-float-heart {
+  z-index: 2;
+  filter: drop-shadow(0 0 8px rgba(244, 114, 182, 0.4));
+}
+
+.calendar-inner {
+  width: 100%;
+  background: linear-gradient(
+    165deg,
+    rgba(45, 12, 35, 0.92) 0%,
+    rgba(35, 10, 40, 0.96) 45%,
+    rgba(50, 15, 45, 0.94) 100%
+  );
+  border-radius: 1.45rem;
+  padding: 1rem 0.5rem 0.75rem;
+  border: 1px solid rgba(255, 182, 213, 0.12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+@media (min-width: 640px) {
+  .calendar-inner {
+    padding: 1.25rem 0.75rem 1rem;
+  }
+}
+
+.calendar-selected-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  margin: 0 0.35rem 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 1.1rem;
+  background: linear-gradient(
+    90deg,
+    rgba(251, 113, 133, 0.22),
+    rgba(244, 114, 182, 0.16),
+    rgba(192, 132, 252, 0.14)
+  );
+  border: 1px solid rgba(251, 113, 133, 0.28);
+  box-shadow: 0 8px 24px rgba(244, 63, 138, 0.15);
+}
+
+.calendar-selected-day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 1rem;
+  background: linear-gradient(145deg, #fb7185, #f472b6, #c084fc);
+  color: white;
+  font-weight: 700;
+  font-family: var(--font-serif), serif;
+  font-size: 1.35rem;
+  box-shadow:
+    0 0 24px rgba(244, 114, 182, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+/* Full-width feminine calendar */
+.rdp-root,
+.romantic-rdp {
+  --rdp-accent-color: #f472b6;
+  --rdp-accent-background-color: rgba(244, 114, 182, 0.18);
+  --rdp-background-color: transparent;
+  --rdp-day-height: auto;
+  --rdp-day-width: auto;
+  --rdp-day_button-height: auto;
+  --rdp-day_button-width: 100%;
+  color: #fce7f3;
+  width: 100%;
+  margin: 0;
+}
+
+.rdp-root .rdp-months,
+.romantic-rdp .rdp-months {
+  width: 100%;
+  max-width: 100%;
+}
+
+.rdp-root .rdp-month,
+.romantic-rdp .rdp-month {
+  width: 100%;
+  position: relative;
+}
+
+.rdp-root .rdp-month_grid,
+.romantic-rdp .rdp-month_grid {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0 6px;
+}
+
+/* Month caption */
+.rdp-root .rdp-month_caption,
+.romantic-rdp .rdp-month_caption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid rgba(251, 113, 133, 0.15);
+}
+
+.rdp-root .rdp-caption_label,
+.romantic-rdp .rdp-caption_label {
+  color: #fce7f3;
+  font-family: var(--font-serif), serif;
+  font-size: clamp(1.25rem, 4vw, 1.6rem);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  background: linear-gradient(90deg, #fda4af, #fff1f2, #f9a8d4, #e9d5ff, #fda4af);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 4s linear infinite;
+}
+
+/* Navigation */
+.rdp-root .rdp-nav,
+.romantic-rdp .rdp-nav {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 0.15rem;
+}
+
+.rdp-root .rdp-button_previous,
+.rdp-root .rdp-button_next,
+.romantic-rdp .rdp-button_previous,
+.romantic-rdp .rdp-button_next {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  width: 2.35rem;
+  height: 2.35rem;
+  background: linear-gradient(145deg, rgba(251, 113, 133, 0.18), rgba(192, 132, 252, 0.12));
+  border: 1px solid rgba(251, 113, 133, 0.25);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.rdp-root .rdp-button_previous:hover,
+.rdp-root .rdp-button_next:hover,
+.romantic-rdp .rdp-button_previous:hover,
+.romantic-rdp .rdp-button_next:hover {
+  background: linear-gradient(145deg, rgba(251, 113, 133, 0.35), rgba(192, 132, 252, 0.28));
+  border-color: rgba(251, 113, 133, 0.5);
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(244, 114, 182, 0.35);
+}
+
+.rdp-root .rdp-chevron,
+.romantic-rdp .rdp-chevron {
+  fill: #fda4af;
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Weekday headers */
+.rdp-root .rdp-weekdays,
+.romantic-rdp .rdp-weekdays {
+  margin-bottom: 0.25rem;
+}
+
+.rdp-root .rdp-weekday,
+.romantic-rdp .rdp-weekday {
+  color: rgba(253, 164, 175, 0.65);
+  font-size: clamp(0.65rem, 2.5vw, 0.75rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  padding: 0.4rem 0;
+  width: 14.2857%;
+}
+
+.rdp-root .rdp-weekday:nth-child(1),
+.rdp-root .rdp-weekday:nth-child(7),
+.romantic-rdp .rdp-weekday:nth-child(1),
+.romantic-rdp .rdp-weekday:nth-child(7) {
+  color: rgba(251, 113, 133, 0.9);
+}
+
+/* Day cells — full width grid */
+.rdp-root .rdp-day,
+.romantic-rdp .rdp-day {
+  width: 14.2857%;
+  padding: 2px;
+  text-align: center;
+  vertical-align: middle;
+  animation: day-pop 0.45s cubic-bezier(0.34, 1.4, 0.64, 1) backwards;
+}
+
+.rdp-root .rdp-week .rdp-day:nth-child(1) { animation-delay: 0.03s; }
+.rdp-root .rdp-week .rdp-day:nth-child(2) { animation-delay: 0.06s; }
+.rdp-root .rdp-week .rdp-day:nth-child(3) { animation-delay: 0.09s; }
+.rdp-root .rdp-week .rdp-day:nth-child(4) { animation-delay: 0.12s; }
+.rdp-root .rdp-week .rdp-day:nth-child(5) { animation-delay: 0.15s; }
+.rdp-root .rdp-week .rdp-day:nth-child(6) { animation-delay: 0.18s; }
+.rdp-root .rdp-week .rdp-day:nth-child(7) { animation-delay: 0.21s; }
+
+@keyframes day-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.rdp-root .rdp-day_button,
+.romantic-rdp .rdp-day_button {
+  color: #fce7f3;
+  border-radius: 0.85rem;
+  width: 100%;
+  aspect-ratio: 1;
+  min-height: 2.5rem;
+  max-height: 3.5rem;
+  margin: 0 auto;
+  font-size: clamp(0.8rem, 2.8vw, 0.95rem);
+  font-weight: 500;
+  border: 2px solid transparent;
+  background: rgba(255, 255, 255, 0.02);
+  transition: all 0.28s cubic-bezier(0.34, 1.4, 0.64, 1);
+  cursor: pointer;
+}
+
+@media (min-width: 640px) {
+  .rdp-root .rdp-day_button,
+  .romantic-rdp .rdp-day_button {
+    min-height: 2.75rem;
+    border-radius: 1rem;
+  }
+}
+
+.rdp-root .rdp-day_button:hover:not(:disabled),
+.romantic-rdp .rdp-day_button:hover:not(:disabled) {
+  background: linear-gradient(145deg, rgba(251, 113, 133, 0.28), rgba(192, 132, 252, 0.2));
+  border-color: rgba(251, 113, 133, 0.4);
+  transform: scale(1.08);
+  box-shadow:
+    0 0 18px rgba(244, 114, 182, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.rdp-root .rdp-day_button:active:not(:disabled),
+.romantic-rdp .rdp-day_button:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+/* Weekend days */
+.rdp-root .rdp-weekend .rdp-day_button:not(:disabled),
+.romantic-rdp .rdp-weekend .rdp-day_button:not(:disabled) {
+  color: #fda4af;
+  background: rgba(251, 113, 133, 0.06);
+}
+
+/* Today */
+.rdp-root .rdp-today:not(.rdp-selected) .rdp-day_button,
+.romantic-rdp .rdp-today:not(.rdp-selected) .rdp-day_button {
+  border: 2px solid rgba(251, 113, 133, 0.55);
+  color: #fda4af;
+  font-weight: 700;
+  background: linear-gradient(145deg, rgba(251, 113, 133, 0.12), rgba(192, 132, 252, 0.08));
+  animation: today-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes today-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(244, 114, 182, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 7px rgba(244, 114, 182, 0);
+  }
+}
+
+/* Selected day */
+.rdp-root .rdp-selected .rdp-day_button,
+.romantic-rdp .rdp-selected .rdp-day_button {
+  background: linear-gradient(145deg, #3b82f6, #6366f1, #8b5cf6) !important;
+  color: white !important;
+  font-weight: 700;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  box-shadow:
+    0 0 28px rgba(244, 114, 182, 0.65),
+    0 0 50px rgba(192, 132, 252, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transform: scale(1.05);
+  animation: selected-glow 2s ease-in-out infinite;
+}
+
+@keyframes selected-glow {
+  0%, 100% {
+    box-shadow:
+      0 0 28px rgba(244, 114, 182, 0.65),
+      0 0 50px rgba(192, 132, 252, 0.25);
+  }
+  50% {
+    box-shadow:
+      0 0 36px rgba(244, 114, 182, 0.85),
+      0 0 60px rgba(192, 132, 252, 0.4);
+  }
+}
+
+/* Disabled */
+.rdp-root .rdp-disabled .rdp-day_button,
+.romantic-rdp .rdp-disabled .rdp-day_button {
+  color: rgba(255, 255, 255, 0.08);
+  background: transparent;
+  cursor: not-allowed;
+}
+
+.rdp-root .rdp-disabled .rdp-day_button:hover,
+.romantic-rdp .rdp-disabled .rdp-day_button:hover {
+  transform: none;
+  box-shadow: none;
+  background: transparent;
+  border-color: transparent;
+}
+
+/* Month transition animation */
+.rdp-root .rdp-weeks,
+.romantic-rdp .rdp-weeks {
+  width: 100%;
+}
+
+.rdp-root .rdp-week,
+.romantic-rdp .rdp-week {
+  animation: week-fade-in 0.4s ease-out;
+}
+
+@keyframes week-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Legacy dark calendar (fallback) */
+.rdp-root {
+  width: 100%;
+}
+
+/* Selection cards */
+.select-card {
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.select-card:hover {
+  border-color: rgba(99, 102, 241, 0.4);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.select-card.selected {
+  border-color: rgba(129, 140, 248, 0.7) !important;
+  background: linear-gradient(145deg, rgba(59, 130, 246, 0.16), rgba(139, 92, 246, 0.14)) !important;
+  box-shadow:
+    0 0 32px rgba(99, 102, 241, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+}
+
+.select-card.selected::after {
+  content: "✓";
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 11px;
+  color: #c7d2fe;
+  background: rgba(99, 102, 241, 0.35);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.35); border-radius: 3px; }
