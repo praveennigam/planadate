@@ -15,12 +15,12 @@ export function WizardShell({ children }: WizardShellProps) {
       className="wizard-shell mx-auto w-full"
     >
       <div className="glass-card glow-border relative flex flex-col overflow-hidden rounded-3xl">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-400/50 to-transparent" />
-        <div className="pointer-events-none absolute -right-20 -top-20 h-40 w-40 rounded-full bg-blue-500/10 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-20 -left-20 h-40 w-40 rounded-full bg-violet-500/10 blur-3xl" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-rose-400/40 to-transparent" />
+        <div className="pointer-events-none absolute -right-20 -top-20 h-40 w-40 rounded-full bg-rose-500/8 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-20 -left-20 h-40 w-40 rounded-full bg-pink-500/8 blur-3xl" />
 
-        <header className="wizard-brand shrink-0 border-b border-indigo-400/10 px-5 py-4 text-center sm:px-7 sm:py-5">
-          <p className="mb-1 text-[10px] font-medium uppercase tracking-[0.32em] text-indigo-300/50 sm:text-xs">
+        <header className="wizard-brand shrink-0 border-b border-rose-400/10 px-5 py-4 text-center sm:px-7 sm:py-5">
+          <p className="mb-1 text-[10px] font-medium uppercase tracking-[0.32em] text-rose-200/45 sm:text-xs">
             A special invitation
           </p>
           <h1 className="flex items-center justify-center gap-2 font-serif text-xl font-bold sm:text-2xl">
@@ -103,7 +103,7 @@ export function StepHeader({
       </motion.h2>
 
       <motion.p
-        className={`mx-auto max-w-sm leading-relaxed text-indigo-200/55 ${
+        className={`mx-auto max-w-sm leading-relaxed text-rose-100/55 ${
           compact ? "text-xs" : "text-sm"
         }`}
         initial={{ opacity: 0 }}

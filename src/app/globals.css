@@ -2,13 +2,13 @@
 @import "react-day-picker/style.css";
 
 :root {
-  --background: #080818;
-  --foreground: #eef2ff;
-  --accent: #6366f1;
-  --accent-soft: #818cf8;
-  --accent-lavender: #a78bfa;
-  --glass: rgba(99, 102, 241, 0.06);
-  --glass-border: rgba(129, 140, 248, 0.18);
+  --background: #0b1220;
+  --foreground: #fff1f2;
+  --accent: #fb7185;
+  --accent-soft: #fda4af;
+  --accent-lavender: #f9a8d4;
+  --glass: rgba(251, 113, 133, 0.06);
+  --glass-border: rgba(253, 164, 175, 0.2);
 }
 
 @theme inline {
@@ -35,12 +35,12 @@ body {
 
 /* Deep dark animated background */
 .dark-bg {
-  background-color: #080818;
+  background-color: #0b1220;
   background-image:
-    radial-gradient(ellipse 90% 60% at 12% 18%, rgba(59, 130, 246, 0.14), transparent 60%),
-    radial-gradient(ellipse 70% 50% at 88% 78%, rgba(139, 92, 246, 0.16), transparent 60%),
-    radial-gradient(ellipse 50% 40% at 50% 0%, rgba(99, 102, 241, 0.12), transparent 50%),
-    radial-gradient(ellipse 40% 30% at 80% 12%, rgba(124, 58, 237, 0.1), transparent 50%);
+    radial-gradient(ellipse 90% 60% at 12% 18%, rgba(251, 113, 133, 0.1), transparent 60%),
+    radial-gradient(ellipse 70% 50% at 88% 78%, rgba(244, 114, 182, 0.1), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 50% 0%, rgba(30, 58, 95, 0.35), transparent 50%),
+    radial-gradient(ellipse 40% 30% at 80% 12%, rgba(15, 23, 42, 0.5), transparent 50%);
 }
 
 /* Glass card */
@@ -48,9 +48,9 @@ body {
   position: relative;
   background: linear-gradient(
     145deg,
-    rgba(59, 130, 246, 0.1) 0%,
-    rgba(99, 102, 241, 0.08) 45%,
-    rgba(139, 92, 246, 0.1) 100%
+    rgba(30, 41, 59, 0.55) 0%,
+    rgba(20, 28, 46, 0.72) 45%,
+    rgba(36, 24, 36, 0.55) 100%
   );
   border: 1px solid var(--glass-border);
   backdrop-filter: blur(24px);
@@ -59,9 +59,9 @@ body {
 
 .glow-border {
   box-shadow:
-    0 0 0 1px rgba(99, 102, 241, 0.18),
+    0 0 0 1px rgba(251, 113, 133, 0.14),
     0 10px 36px rgba(0, 0, 0, 0.35),
-    0 0 70px rgba(139, 92, 246, 0.1),
+    0 0 70px rgba(244, 114, 182, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.07);
 }
 
@@ -69,11 +69,11 @@ body {
 .shimmer-text {
   background: linear-gradient(
     90deg,
-    #60a5fa 0%,
-    #eef2ff 30%,
-    #818cf8 50%,
-    #c4b5fd 70%,
-    #60a5fa 100%
+    #fda4af 0%,
+    #fff1f2 30%,
+    #fb7185 50%,
+    #fecdd3 70%,
+    #fda4af 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
@@ -128,14 +128,14 @@ body {
 .wizard-brand {
   background: linear-gradient(
     180deg,
-    rgba(99, 102, 241, 0.08) 0%,
+    rgba(251, 113, 133, 0.08) 0%,
     transparent 100%
   );
 }
 
 .wizard-body {
   scrollbar-width: thin;
-  scrollbar-color: rgba(99, 102, 241, 0.3) transparent;
+  scrollbar-color: rgba(251, 113, 133, 0.3) transparent;
 }
 
 .step-header {
